@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>学園祭アイテムシミュレーター</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/the-new-css-reset/css/reset.min.css"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <div class="simulator-container">
+      <div class="controls">
+        <div class="control-group">
+          <h2>1. アイテムを選択</h2>
+          <select id="item-select"></select>
+        </div>
+        <div class="control-group">
+          <h2>2. カラーを選択</h2>
+          <div id="color-swatches"></div>
+        </div>
+        <div class="control-group">
+          <h2>3. デザインを選択</h2>
+          <div class="design-switcher">
+            <button id="prev-design" title="前のデザイン">&lt;</button>
+            <div id="design-color-switcher" style="display: none">
+              <button class="design-color-btn active" data-color="black">
+                黒
+              </button>
+              <button class="design-color-btn" data-color="white">白</button>
+            </div>
+            <button id="next-design" title="次のデザイン">&gt;</button>
+          </div>
+        </div>
+
+        <div class="selection-summary">
+          <ul>
+            <li>アイテム: <span id="summary-item">---</span></li>
+            <li>カラー: <span id="summary-color">---</span></li>
+            <li>デザイン: <span id="summary-design">---</span></li>
+            <li class="summary-price">
+              価格: <span id="summary-price">---</span> 円
+            </li>
+          </ul>
+        </div>
+
+        <div class="submit-button-area">
+          <button type="button" class="submit-button" id="open-form-button">
+            お申し込みフォームへ
+          </button>
+        </div>
+      </div>
+
+      <div class="preview">
+        <div class="preview-wrapper">
+          <img
+            id="preview-image"
+            class="preview-image"
+            src=""
+            alt="選択されたアイテムのプレビュー"
+          />
+          <img id="design-image" class="design-image" src="" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <div id="modal-overlay">
+      <div id="modal-content">
+        <button id="modal-close-btn" title="閉じる">&times;</button>
+        <div id="iframe-loader">読み込み中...</div>
+        <iframe
+          id="form-iframe"
+          src=""
+          frameborder="0"
+          marginheight="0"
+          marginwidth="0"
+        ></iframe>
+      </div>
+    </div>
+
+    <script src="./js/data.js"></script>
+    <script src="./js/main.js"></script>
+  </body>
+</html>

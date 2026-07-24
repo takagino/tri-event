@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>就職実績 | 保護者懇談会資料</title>
+  <meta name="description" content="保護者懇談会向けに作成された、就職実績データの可視化ダッシュボードです。内定率、職種・地域・業種の割合、月毎の内定者数推移などを分かりやすく表示します。">
+
+  <!-- Google Fonts: Outfit (英語用数値フォント等) & Noto Sans JP (日本語用) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@400;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- メインスタイルシート -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ヘッダーエリア -->
+  <header>
+    <div class="container header-inner">
+      <!-- 左側: 学校名とタイトル -->
+      <div class="brand">
+        <span id="school-name" class="school-tag">学校名ロード中...</span>
+        <div class="title-area">
+          <h1 id="department-name">就職実績 報告ダッシュボード</h1>
+        </div>
+      </div>
+
+      <!-- 右側: 年度・日付情報 -->
+      <div class="meta-info">
+        <span id="target-year" class="target-year">2027年卒実績</span>
+        <div id="update-date" class="update-date">更新日ロード中...</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- メインコンテンツ -->
+  <main class="container">
+
+    <!-- 年度切り替えボタングループ -->
+    <div class="year-switcher-card">
+      <div class="year-switcher-label">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        表示卒年の切り替え
+      </div>
+      <div class="year-pills" role="radiogroup" aria-label="卒年切り替え">
+        <button class="year-pill" data-year="2023" role="radio" aria-checked="false">2024年卒</button>
+        <button class="year-pill" data-year="2024" role="radio" aria-checked="false">2025年卒</button>
+        <button class="year-pill" data-year="2025" role="radio" aria-checked="false">2026年卒</button>
+        <button class="year-pill active" data-year="2026" role="radio" aria-checked="true">2027年卒</button>
+        <button class="year-pill" data-year="compare" role="radio" aria-checked="false">統計</button>
+      </div>
+    </div>
+
+    <!-- 実績サマリー表示エリア -->
+    <div class="dashboard-content">
+
+      <!-- KPI カードグリッド -->
+      <div class="kpi-grid">
+        <!-- カード1: 卒業者・内定決定者 (最優先項目) -->
+        <div class="card kpi-card primary-border">
+          <div class="kpi-header">
+            <span>就職決定／卒業者数</span>
+            <span class="kpi-icon orange">名</span>
+          </div>
+          <div class="kpi-value">
+            <span id="kpi-secured">0</span>
+            <span class="kpi-unit" style="margin: 0 4px;">/</span>
+            <span id="kpi-graduates" style="font-size: 1.5rem; color: var(--text-secondary);">0</span>
+          </div>
+          <div class="kpi-progress">
+            <div id="bar-secured-rate" class="kpi-progress-bar" style="width: 100%; background: var(--accent-orange);">
+            </div>
+          </div>
+          <div class="kpi-footer">
+            進学・留学などその他の進路を除く
+          </div>
+        </div>
+
+        <!-- カード2: 就職内定率 -->
+        <div class="card kpi-card">
+          <div class="kpi-header">
+            <span>就職内定率</span>
+            <span class="kpi-icon blue">内定</span>
+          </div>
+          <div id="kpi-emp-rate" class="kpi-value">0<span class="kpi-unit">%</span></div>
+          <div class="kpi-progress">
+            <div id="bar-emp-rate" class="kpi-progress-bar"></div>
+          </div>
+          <div class="kpi-footer">
+            就職希望者の内定獲得状況
+          </div>
+        </div>
+
+        <!-- カード3: 業界就職率 -->
+        <div class="card kpi-card">
+          <div class="kpi-header">
+            <span>業界就職率</span>
+            <span class="kpi-icon teal">業界</span>
+          </div>
+          <div id="kpi-ind-rate" class="kpi-value">0<span class="kpi-unit">%</span></div>
+          <div class="kpi-progress">
+            <div id="bar-ind-rate" class="kpi-progress-bar" style="background: var(--accent-teal);"></div>
+          </div>
+          <div class="kpi-footer">
+            Web系専門職としての就職率
+          </div>
+        </div>
+
+        <!-- カード4: 実際に受けた社数（1人平均） -->
+        <div class="card kpi-card">
+          <div class="kpi-header">
+            <span>応募社数 (1人平均)</span>
+            <span class="kpi-icon purple">受験</span>
+          </div>
+          <div id="kpi-avg-applied" class="kpi-value">0<span class="kpi-unit">社</span></div>
+          <div class="kpi-progress" style="height: 4px;">
+            <div class="kpi-progress-bar" style="width: 100%; background: var(--accent-purple);"></div>
+          </div>
+          <div class="kpi-footer">
+            ※１番多く応募した人の企業数
+          </div>
+        </div>
+      </div>
+
+      <!-- グラフエリア 1段目: 3カラム (職種別・地域別・業種別) -->
+      <div class="grid-3col">
+        <!-- 職種割合 -->
+        <div class="card">
+          <h2 class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+              <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+            </svg>
+            希望職種別就職割合
+          </h2>
+          <div class="chart-container">
+            <canvas id="jobTypeChart" aria-label="職種別就職割合のドーナツグラフ" role="img"></canvas>
+          </div>
+        </div>
+
+        <!-- 地域別就職割合 (NEW) -->
+        <div class="card">
+          <h2 class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            勤務地域別就職割合
+          </h2>
+          <div class="chart-container">
+            <canvas id="regionChart" aria-label="地域別就職割合のドーナツグラフ" role="img"></canvas>
+          </div>
+        </div>
+
+        <!-- 業種割合 -->
+        <div class="card">
+          <h2 class="card-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-purple)" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            主要業種別就職割合
+          </h2>
+          <div class="chart-container">
+            <canvas id="industryChart" aria-label="業種別就職割合の横棒グラフ" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- グラフエリア 2段目: 1カラムワイド (月別内定推移) -->
+      <div class="card">
+        <h2 class="card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-orange)" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 3v18h18"></path>
+            <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+          </svg>
+          月毎の内定獲得推移 (単月内定者数 ＆ 累計合計)
+        </h2>
+        <div class="chart-container" style="height: 480px;">
+          <canvas id="monthlyTrendChart" aria-label="月別内定者数と累計合計の推移グラフ" role="img"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- プレゼン補助用のフローティングボタン群 -->
+  <div class="presentation-controls" role="toolbar" aria-label="プレゼンテーション補助ツール">
+    <!-- 個人面談スケジュール -->
+    <button id="toggle-schedule" class="control-btn" title="個人面談スケジュール">
+      <svg viewBox="0 0 24 24">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+        <path d="M8 14h8" />
+        <path d="M8 18h5" />
+      </svg>
+    </button>
+
+    <!-- 高コントラスト切り替え (黒背景トグル) -->
+    <button id="toggle-contrast" class="control-btn" title="黒背景モード (プロジェクター用)">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+        <path d="M12 3v18" />
+        <path d="M12 12h9a9 9 0 0 0 -9 -9" />
+        <path d="M12 12h9a9 9 0 0 1 -9 9" />
+      </svg>
+    </button>
+
+    <!-- フルスクリーン切り替え -->
+    <button id="toggle-fullscreen" class="control-btn" title="フルスクリーン表示">
+      <svg viewBox="0 0 24 24">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- 個人面談スケジュール モーダル -->
+  <div id="schedule-modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-overlay" id="schedule-modal-overlay"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 id="schedule-modal-title" class="modal-title">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align: middle;">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <path d="M8 14h8"></path>
+            <path d="M8 18h5"></path>
+          </svg>
+          個人面談スケジュール
+        </h2>
+        <button id="close-schedule" class="modal-close-btn" aria-label="閉じる">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="schedule-table-wrapper">
+          <table class="schedule-table">
+            <thead>
+              <tr>
+                <th scope="col" class="col-time">時間</th>
+                <th scope="col" class="col-name">お名前</th>
+              </tr>
+            </thead>
+            <tbody id="schedule-table-body">
+              <!-- JSで動的に生成 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 静的データ・メインロジックのスクリプト -->
+  <script src="schedule.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

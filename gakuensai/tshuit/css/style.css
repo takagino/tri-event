@@ -1,0 +1,277 @@
+body {
+  font-family: sans-serif;
+  padding: 2rem 1rem;
+  background-color: #f9f9f9;
+}
+.simulator-container {
+  display: flex;
+  flex-wrap: wrap; /* スマホなどで縦並びにする */
+  gap: 2rem;
+  max-width: 1500px;
+  margin: auto;
+}
+.controls {
+  flex: 1; /* コントロール領域 */
+  min-width: 250px;
+}
+
+/* --- プレビュー領域 --- */
+.preview {
+  flex: 2; /* プレビュー領域 */
+  min-width: 300px;
+  aspect-ratio: 1/1;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.preview-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.preview-image {
+  /* (ベース画像) */
+  max-width: 100%;
+  transition: opacity 0.2s ease-in-out;
+}
+.design-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0; /* 初期状態は非表示 */
+}
+
+/* --- コントロールUI --- */
+.control-group {
+  margin-bottom: 2.5rem;
+}
+.control-group h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
+}
+#item-select {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* --- 色見本 --- */
+#color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.color-label {
+  position: relative;
+  cursor: pointer;
+}
+.color-label input[type='radio'] {
+  opacity: 0;
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.color-swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%; /* 円形 */
+  border: 2px solid #ccc;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+.color-label input[type='radio']:checked + .color-swatch {
+  transform: scale(1.15);
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.7);
+}
+.color-label:hover .color-swatch {
+  transform: scale(1.1);
+}
+
+/* --- デザイン切り替え --- */
+.design-switcher {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+.design-switcher button {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.design-switcher button:hover {
+  background-color: #e0e0e0;
+}
+
+/* --- デザインカラー切り替え --- */
+#design-color-switcher {
+  display: none;
+  gap: 8px;
+}
+.design-color-btn {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 2px solid #ccc;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.design-color-btn:hover {
+  background-color: #e0e0e0;
+}
+.design-color-btn.active {
+  border-color: #007bff;
+  background-color: #e0f0ff;
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* --- 選択サマリー --- */
+.selection-summary {
+  margin-top: 2rem; /* デザインUIとの間隔 */
+  padding: 1.2rem 1rem;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  background-color: #f0f8ff; /* (薄い青) */
+}
+.selection-summary ul {
+  list-style: none;
+  padding-left: 0;
+}
+.selection-summary li {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+.selection-summary li span {
+  font-weight: 500;
+  color: #333;
+}
+.selection-summary .summary-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #d9534f; /* (赤系) */
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #ccc;
+}
+.selection-summary .summary-price span {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #d9534f;
+  /* (親要素が bold のため、重複する font-weight を削除) */
+}
+
+/* --- 申し込みボタン --- */
+.submit-button-area {
+  margin-top: 2rem;
+  text-align: center;
+}
+.submit-button {
+  display: inline-block;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s, transform 0.2s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  font-family: inherit; /* buttonフォント継承 */
+}
+.submit-button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+.submit-button:active {
+  transform: translateY(1px);
+}
+
+/* --- モーダルウィンドウ --- */
+#modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3); /* 背景を半透明に */
+  display: none; /* 初期状態は非表示 */
+  align-items: center;
+  justify-content: end;
+  z-index: 1000;
+  padding: 0 1rem 1rem;
+  box-sizing: border-box;
+}
+
+#modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  height: 90%;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#modal-close-btn {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #aaa;
+  background: none;
+  border: none;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  z-index: 1010; /* iframeより手前 */
+}
+#modal-close-btn:hover {
+  color: #333;
+}
+
+#iframe-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  color: #888;
+}
+
+#form-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  visibility: hidden; /* 読み込み完了まで非表示 */
+}
