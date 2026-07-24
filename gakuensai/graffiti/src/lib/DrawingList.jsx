@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { db } from './firebaseClient';
-import { collection, query, orderBy, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
+import { collection, query, orderBy, limit, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
 
 const AnimatedPreview = ({ pathData, isPlaying, onComplete }) => {
   const [progress, setProgress] = useState(isPlaying ? 0 : 1);
@@ -106,7 +106,11 @@ function DrawingList() {
   const collectionName = searchParams.get('name') || 'graffiti';
 
   useEffect(() => {
-    const q = query(collection(db, collectionName), orderBy('created_at', 'desc'));
+    const q = query(
+      collection(db, collectionName), 
+      orderBy('created_at', 'desc'),
+      limit(200)
+    );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const items = [];
       snapshot.forEach(doc => {
@@ -175,7 +179,7 @@ function DrawingList() {
       <style>{`
         .list-wrapper {
           width: 100vw;
-          height: 100vh;
+          height: 100dvh;
           background-color: #f5f5f5;
           display: flex;
           flex-direction: column;
@@ -205,6 +209,7 @@ function DrawingList() {
           background: white;
           border-radius: 10px;
           padding: 20px;
+          padding-bottom: 60px; /* 余白を追加して一番下を押しやすく */
           box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
