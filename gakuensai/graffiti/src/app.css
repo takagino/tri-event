@@ -1,79 +1,51 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
+nav {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 5px 15px;
+  border-radius: 30px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  gap: 15px;
+  align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.divider {
+  width: 1px;
+  height: 24px;
+  background-color: #ccc;
+  margin: 0 5px;
 }
 
-.card {
-  padding: 2em;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+.nav-item {
+  display: flex;
+  align-items: center;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  -webkit-tap-highlight-color: transparent;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+nav a {
+  color: #333;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.2s;
+  -webkit-user-drag: none;
+  text-decoration: none;
+}
+
+nav a:hover {
+  opacity: 0.6;
+}
+
+nav a.active {
+  color: #e91e63;
+}
+
+nav svg {
+  width: 24px;
+  height: 24px;
 }
